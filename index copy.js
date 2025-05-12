@@ -69,15 +69,12 @@ let notes = [
     }
   ]
 
-  app.get('/', (request, response) => {
-    response.json(persons)
-  })
-
-  app.get('/api/persons', (request, response) => {
-    response.json(persons)
+  
+  app.get('/api/notes', (request, response) => {
+    response.json(notes)
   })
   
-  app.get('/api/persons/:id', (request, response) => {
+  app.get('/api/notes/:id', (request, response) => {
     const id = request.params.id
     const note = notes.find(note => note.id === id)
     if (note) {
@@ -87,22 +84,25 @@ let notes = [
       }
   })
 
-  app.delete('/api/persons/:id', (request, response) => {
+  app.delete('/api/notes/:id', (request, response) => {
     const id = request.params.id
-    persons = persons.filter(person => person.id !== id)
+    notes = notes.filter(note => note.id !== id)
   
     response.status(204).end()
   })
 
 
   const generateId = () => {
-    const maxId = persons.length > 0
-      ? Math.max(...persons.map(p => Number(p.id)))
+    const maxId = notes.length > 0
+      ? Math.max(...notes.map(n => Number(n.id)))
       : 0
     return String(maxId + 1)
   }
+  
 
-  app.post('/api/persons/', (request, response) => {
+  
+
+  app.post('/api/notes', (request, response) => {
     const body = request.body
   
     if (!body.content) {
@@ -111,15 +111,15 @@ let notes = [
       })
     }
   
-    const person = {
-      name: body.name, 
-      number: body.number,
+    const note = {
+      content: body.content, 
+      important: body.important || false,
       id: generateId(),
     }
   
-    person = persons.concat(person)
+    notes = notes.concat(note)
   
-    response.json(person)
+    response.json(note)
   })
 
 
